@@ -3,10 +3,13 @@ JUST A FEW THINGS TO NOTE
 =========================================================================================
 
 
-Router R1 was configured with a priority of 155 for all VLANs and serves as the designated Active Router. Router R2 was configured with a priority of 150 for all VLANs and serves as the designated Standby Router.
+Router R1 was configured with a priority of 155 for all VLANs and serves as the designated Active Router. Router R2 was configured with a priority of 150 for all 
+VLANs and serves as the designated Standby Router.
 
-The priority values were intentionally placed close together because of an HSRP feature called interface tracking. When a tracked interface fails, Cisco Packet Tracer automatically reduces the HSRP priority of the affected group by a default value of 10.
-As a result, the priority difference between the Active and Standby routers must be carefully planned. If the priorities are separated by more than 9 points, the default decrement may not be sufficient to cause a failover.
+The priority values were intentionally placed close together because of an HSRP feature called interface tracking. When a tracked interface fails, Cisco Packet 
+Tracer automatically reduces the HSRP priority of the affected group by a default value of 10.
+As a result, the priority difference between the Active and Standby routers must be carefully planned. If the priorities are separated by more than 9 points, the 
+default decrement may not be sufficient to cause a failover.
 
 // Example
 
@@ -26,9 +29,11 @@ Since R2 now has the higher priority, HSRP preemption occurs and R2 assumes the 
 
 What is the relevance of this information?
 
-Cisco Packet Tracer does not support manually configuring the tracking decrement value. On real Cisco IOS devices, administrators can specify the amount by which the priority should be reduced when a tracked interface fails. Packet Tracer, however, always uses the default decrement value of 10.
+Cisco Packet Tracer does not support manually configuring the tracking decrement value. On real Cisco IOS devices, administrators can specify the amount by which 
+the priority should be reduced when a tracked interface fails. Packet Tracer, however, always uses the default decrement value of 10.
 
-Because of this limitation, the Active Router's priority was configured only 5 points higher than the Standby Router's priority. This ensures that a single tracked interface failure will lower the Active Router's priority below the Standby Router's priority, allowing failover and preemption to occur as intended.
+Because of this limitation, the Active Router's priority was configured only 5 points higher than the Standby Router's priority. This ensures that a single 
+tracked interface failure will lower the Active Router's priority below the Standby Router's priority, allowing failover and preemption to occur as intended.
 
 
 
