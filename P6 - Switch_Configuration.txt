@@ -1,0 +1,130 @@
+=========================================================================================
+SW-A1
+=========================================================================================
+
+==========[ Escalate Mode ]==========
+
+enable
+
+configure terminal
+
+
+==========[ Basic Configurations ]==========
+
+hostname SW-A1
+
+no ip domain-lookup
+
+
+==========[ Assigning VLAN to a port ]==========
+
+vlan 10
+ name VLAN-10
+exit
+
+vlan 20
+ name VLAN-20
+exit
+
+vlan 30
+ name VLAN-30
+exit
+
+vlan 72
+ name Native
+exit
+
+
+interface f0/1
+ description VLAN 10
+ switchport mode access
+ switchport access vlan 10
+exit
+
+
+==========[ Configuring Trunk ]==========
+
+interface g0/1
+ description Link to R1
+ switchport mode trunk
+ switchport trunk native vlan 72
+ switchport trunk allowed vlan 10,20,30,72
+exit
+
+interface g0/2
+ description Link to R2
+ switchport mode trunk
+ switchport trunk native vlan 72
+ switchport trunk allowed vlan 10,20,30,72
+exit
+
+
+
+=========================================================================================
+SW-A2
+=========================================================================================
+
+==========[ Escalate Mode ]==========
+
+enable
+
+configure terminal
+
+
+==========[ Basic Configurations ]==========
+
+hostname SW-A2
+
+no ip domain-lookup
+
+
+==========[ Assigning VLAN to a port ]==========
+
+vlan 10
+ name VLAN-10
+exit
+
+vlan 20
+ name VLAN-20
+exit
+
+vlan 30
+ name VLAN-30
+exit
+
+vlan 72
+ name Native
+exit
+
+
+interface f0/1
+ description VLAN 20
+ switchport mode access
+ switchport access vlan 20
+exit
+
+interface f0/2
+ description VLAN 30
+ switchport mode access
+ switchport access vlan 30
+exit
+
+
+==========[ Configuring Trunk ]==========
+
+interface g0/1
+ description Link to R1
+ switchport mode trunk
+ switchport trunk native vlan 72
+ switchport trunk allowed vlan 10,20,30,72
+exit
+
+interface g0/2
+ description Link to R2
+ switchport mode trunk
+ switchport trunk native vlan 72
+ switchport trunk allowed vlan 10,20,30,72
+exit
+
+
+

@@ -1,0 +1,213 @@
+=========================================================================================
+JUST A FEW THINGS TO NOTE
+=========================================================================================
+
+
+Router R1 was configured with a priority of 155 for all VLANs and serves as the designated Active Router. Router R2 was configured with a priority of 150 for all VLANs and serves as the designated Standby Router.
+
+The priority values were intentionally placed close together because of an HSRP feature called interface tracking. When a tracked interface fails, Cisco Packet Tracer automatically reduces the HSRP priority of the affected group by a default value of 10.
+As a result, the priority difference between the Active and Standby routers must be carefully planned. If the priorities are separated by more than 9 points, the default decrement may not be sufficient to cause a failover.
+
+// Example
+
+Initial priorities:
+- R1 (Active)  = 155
+- R2 (Standby) = 150
+
+When a tracked interface on R1 fails, Packet Tracer applies the default decrement:
+
+155 - 10 = 145
+
+Resulting priorities:
+- R1 = 145
+- R2 = 150
+
+Since R2 now has the higher priority, HSRP preemption occurs and R2 assumes the Active role.
+
+What is the relevance of this information?
+
+Cisco Packet Tracer does not support manually configuring the tracking decrement value. On real Cisco IOS devices, administrators can specify the amount by which the priority should be reduced when a tracked interface fails. Packet Tracer, however, always uses the default decrement value of 10.
+
+Because of this limitation, the Active Router's priority was configured only 5 points higher than the Standby Router's priority. This ensures that a single tracked interface failure will lower the Active Router's priority below the Standby Router's priority, allowing failover and preemption to occur as intended.
+
+
+
+
+=========================================================================================
+R1
+=========================================================================================
+
+==========[ Escalate Mode ]==========
+
+enable
+
+configure terminal
+
+
+==========[ Basic Configurations ]==========
+
+hostname R1
+
+no ip domain-lookup
+
+
+==========[ Enabling Interfaces ]==========
+
+interface g0/1
+ description Link to SW-A1 - DO NOT SHUTDOWN
+ no shutdown
+exit
+
+interface g0/2
+ description Link to SW-A2 - DO NOT SHUTDOWN
+ no shutdown
+exit
+
+
+==========[ Assigning IP to Sub-Interfaces & Configuring HSRP ]==========
+
+interface g0/1.10
+ description VLAN 10 - Primary Router
+ encapsulation dot1q 10
+ ip address 192.168.10.252 255.255.255.0
+ standby version 2
+ standby 10 ip 192.168.10.254 
+ standby 10 priority 155
+ standby 10 preempt
+ standby 10 track g0/2.20
+ standby 10 track g0/2.30
+exit
+
+interface g0/2.20
+ description VLAN 20 - Primary Router
+ encapsulation dot1q 20
+ ip address 192.168.20.252 255.255.255.0
+ standby version 2
+ standby 20 ip 192.168.20.254 
+ standby 20 priority 155
+ standby 20 preempt
+ standby 20 track g0/1.10
+exit
+
+interface g0/2.30
+ description VLAN 30 - Primary Router
+ encapsulation dot1q 30
+ ip address 192.168.30.252 255.255.255.0
+ standby version 2
+ standby 30 ip 192.168.30.254 
+ standby 30 priority 155
+ standby 30 preempt
+ standby 30 track g0/1.10
+exit
+
+
+
+=========================================================================================
+R2
+=========================================================================================
+
+==========[ Escalate Mode ]==========
+
+enable
+
+configure terminal
+
+
+==========[ Basic Configurations ]==========
+
+hostname R2
+
+no ip domain-lookup
+
+
+
+==========[ Enabling Interfaces ]==========
+
+interface g0/1
+ description Link to SW-A1 - DO NOT SHUTDOWN
+ no shutdown
+exit
+
+interface g0/2
+ description Link to SW-A2 - DO NOT SHUTDOWN
+ no shutdown
+exit
+
+
+==========[ Assigning IP to Sub-Interfaces & Configuring HSRP ]==========
+
+interface g0/1.10
+ description VLAN 10 - Standby Router
+ encapsulation dot1q 10
+ ip address 192.168.10.253 255.255.255.0
+ standby version 2
+ standby 10 ip 192.168.10.254 
+ standby 10 priority 150
+ standby 10 preempt
+ standby 10 track g0/2.20
+ standby 10 track g0/2.30 
+exit
+
+interface g0/2.20
+ description VLAN 20 - Standby Router
+ encapsulation dot1q 20
+ ip address 192.168.20.253 255.255.255.0
+ standby version 2
+ standby 20 ip 192.168.20.254 
+ standby 20 priority 150
+ standby 20 preempt
+ standby 20 track g0/1.10
+exit
+
+interface g0/2.30
+ description VLAN 30 - Standby Router
+ encapsulation dot1q 30
+ ip address 192.168.30.253 255.255.255.0
+ standby version 2
+ standby 30 ip 192.168.30.254 
+ standby 30 priority 150
+ standby 30 preempt
+ standby 30 track g0/1.10
+exit
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+VLAN 10
+- 192.168.10.0 /24
+
+Virtual Gateway: 192.168.10.254
+R1 (0/1): 192.168.10.252          // R1 Active Router
+R2 (0/1): 192.168.10.253
+
+
+
+---------------------------------------------------------
+VLAN 20
+- 192.168.20.0 /24
+
+Virtual Gateway: 192.168.20.254
+R1 (0/2): 192.168.20.252          // R1 Active Router
+R2 (0/2): 192.168.20.253
+
+
+
+---------------------------------------------------------
+VLAN 30
+- 192.168.30.0 /24
+
+Virtual Gateway: 192.168.30.254
+R1 (0/2): 192.168.30.252          // R1 Active Router
+R2 (0/2): 192.168.30.253
