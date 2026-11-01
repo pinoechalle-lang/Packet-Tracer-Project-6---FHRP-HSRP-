@@ -52,7 +52,7 @@ Note that Packet Tracer does not support a configurable tracking `decrement`. It
 | 6 | SW-A2 f0/1 | PCA-20 (VLAN 20) |
 | 7 | SW-A2 f0/2 | PCA-30 (VLAN 30) |
 
-## Addressing Plan
+### Addressing Plan
 
 | VLAN | Network | Virtual Gateway (HSRP) | R1 (Active) | R2 (Standby) |
 |---|---|---|---|---|---|
@@ -63,7 +63,7 @@ Note that Packet Tracer does not support a configurable tracking `decrement`. It
 
 ---
 
-## HSRP Design
+### HSRP Design
 
 | Setting | R1 | R2 |
 |---|---|---|
@@ -78,7 +78,7 @@ Note that Packet Tracer does not support a configurable tracking `decrement`. It
 
 ---
 
-## Acceptance Tests
+### Acceptance Tests
 
 | # | Test | Expected Result |
 |---|---|---|
@@ -89,7 +89,7 @@ Note that Packet Tracer does not support a configurable tracking `decrement`. It
 | 5 | Restore the link | R1 preempts and returns to Active (155). |
 | 6 | Repeat steps 3 to 5 with the R1 to SW-A2 link | R1's priority drops to 135 on group 10 (two tracked interfaces lost). R2 becomes Active, and pings succeed. |
 
-## Verification Commands
+### Verification Commands
 
 ```
 show standby brief
@@ -120,15 +120,13 @@ ping <virtual IP>
 | `show arp` / `arp -a` | Router / PC | IP-to-MAC mappings | Checking the PC resolved the virtual IP to the virtual MAC |
 | `ping <virtual IP>` | PC | Tests reachability of the gateway | After any change, from a host |
 
----
-
-## Known Limitations
+### Known Limitations
 
 - Each access switch is a single point of failure for the hosts attached to it. HSRP protects the gateway, not the switch.
 - The switches are not interconnected, so there is no Layer 2 loop and no STP dependency in this design.
 - On real IOS, the tracking `decrement` can be set manually, and `preempt delay` is recommended. These are not available or reliable in Packet Tracer.
 
-## Files
+### Files
 
 | File | Description |
 |---|---|
