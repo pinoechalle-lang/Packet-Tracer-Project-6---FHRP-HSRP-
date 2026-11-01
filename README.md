@@ -55,7 +55,7 @@ Note that Packet Tracer does not support a configurable tracking `decrement`. It
 ### Addressing Plan
 
 | VLAN | Network | Virtual Gateway (HSRP) | R1 (Active) | R2 (Standby) |
-|---|---|---|---|---|---|
+|---|---|---|---|---|
 | 10 | 192.168.10.0/24 | 192.168.10.254 | 192.168.10.252 | 192.168.10.253 |
 | 20 | 192.168.20.0/24 | 192.168.20.254 | 192.168.20.252 | 192.168.20.253 |
 | 30 | 192.168.30.0/24 | 192.168.30.254 | 192.168.30.252 | 192.168.30.253 |
