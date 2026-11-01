@@ -38,7 +38,7 @@ The network engineer (you) is asked to build a branch network where **a single r
 
 ### Constraint (Packet Tracer Limitation)
 
-Note that Packet Tracer does not support a configurable tracking `decrement`. It always uses the default of **10**. The priority gap between the two routers therefore has to be **smaller than 10**, or one failed tracked interface will never push the Active router below the Standby router. This lab uses **155 (R1)** and **150 (R2)**.
+> Note that Packet Tracer does not support a configurable tracking `decrement`. It always uses the default of **10**. The priority gap between the two routers therefore has to be **smaller than 10**, or one failed tracked interface will never push the Active router below the Standby router. This lab uses **155 (R1)** and **150 (R2)**.
 
 ---
 
