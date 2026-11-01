@@ -38,7 +38,7 @@ The network engineer (you) is asked to build a branch network where **a single r
 
 ### Constraint (Packet Tracer Limitation)
 
-Packet Tracer does not support a configurable tracking `decrement`. It always uses the default of **10**. The priority gap between the two routers therefore has to be **smaller than 10**, or one failed tracked interface will never push the Active router below the Standby router. This lab uses **155 (R1)** and **150 (R2)**.
+Note that Packet Tracer does not support a configurable tracking `decrement`. It always uses the default of **10**. The priority gap between the two routers therefore has to be **smaller than 10**, or one failed tracked interface will never push the Active router below the Standby router. This lab uses **155 (R1)** and **150 (R2)**.
 
 ---
 
@@ -54,12 +54,12 @@ Packet Tracer does not support a configurable tracking `decrement`. It always us
 
 ## Addressing Plan
 
-| VLAN | Department | Network | Virtual Gateway (HSRP) | R1 (Active) | R2 (Standby) |
+| VLAN | Network | Virtual Gateway (HSRP) | R1 (Active) | R2 (Standby) |
 |---|---|---|---|---|---|
-| 10 | Administration | 192.168.10.0/24 | 192.168.10.254 | 192.168.10.252 | 192.168.10.253 |
-| 20 | Sales | 192.168.20.0/24 | 192.168.20.254 | 192.168.20.252 | 192.168.20.253 |
-| 30 | Engineering | 192.168.30.0/24 | 192.168.30.254 | 192.168.30.252 | 192.168.30.253 |
-| 72 | Native (unused) | N/A | N/A | N/A | N/A |
+| 10 | 192.168.10.0/24 | 192.168.10.254 | 192.168.10.252 | 192.168.10.253 |
+| 20 | 192.168.20.0/24 | 192.168.20.254 | 192.168.20.252 | 192.168.20.253 |
+| 30 | 192.168.30.0/24 | 192.168.30.254 | 192.168.30.252 | 192.168.30.253 |
+| 72 | N/A | N/A | N/A | N/A |
 
 ---
 
@@ -74,9 +74,7 @@ Packet Tracer does not support a configurable tracking `decrement`. It always us
 | Group 20 tracks | g0/1.10 | g0/1.10 |
 | Group 30 tracks | g0/1.10 | g0/1.10 |
 
-### Why track the other side?
-
-Each router's subinterfaces are split across two switches. If R1 loses the link to one switch, it can still be Active on the other side, so hosts on that side would send traffic to a router that cannot reach the rest of the network. Tracking makes R1 lower its priority (155 to 145) when it loses the *other* side, so R2 (150) preempts and takes over all VLANs.
+> Each router's subinterfaces are split across two switches. If R1 loses the link to one switch, it can still be Active on the other side, so hosts on that side would send traffic to a router that cannot reach the rest of the network. Tracking makes R1 lower its priority (155 to 145) when it loses the *other* side, so R2 (150) preempts and takes over all VLANs.
 
 ---
 
@@ -93,13 +91,34 @@ Each router's subinterfaces are split across two switches. If R1 loses the link 
 
 ## Verification Commands
 
-| Command | Device | Purpose |
-|---|---|---|
-| `show standby brief` | R1, R2 | Priority, state, and Active/Standby peer per group. |
-| `show standby <interface>` | R1, R2 | Full HSRP detail, including track state, for one subinterface. |
-| `show ip interface brief` | R1, R2 | Confirms interface and subinterface status. |
-| `show interfaces trunk` | SW-A1, SW-A2 | Confirms trunk ports, native VLAN, and allowed VLANs. |
-| `show vlan brief` | SW-A1, SW-A2 | Confirms VLAN-to-port assignment. |
+```
+show standby brief
+show standby
+
+show ip interface brief
+show running-config
+
+show interfaces trunk
+show vlan brief
+
+show mac address-table
+show arp
+
+arp -a
+ping <virtual IP>
+```
+
+ Command | Device | What It Does | When to Use It |
+|---|---|---|---|
+| `show standby brief` | R1, R2 | One line per group: interface, group, priority, preempt flag, state, Active/Standby peer, virtual IP | First check, always. Answers "who is Active, and is it who I expect?" |
+| `show standby [interface]` | R1, R2 | Full detail: state, virtual IP and MAC, timers, preempt, priority vs. configured, tracked objects and their state, last state change | When `brief` looks wrong and you need the reason, such as a priority that didn't drop |
+| `show ip interface brief` | R1, R2 | Up/down status of interfaces and subinterfaces | Early in any problem. A subinterface that is down or has no IP won't leave Init |
+| `show running-config` | R1, R2 | Full configuration | Comparing the two routers' `standby` lines side by side |
+| `show interfaces trunk` | SW-A1, SW-A2 | Trunk ports, native VLAN, allowed and forwarding VLANs | Routers look healthy but hosts can't reach the gateway |
+| `show vlan brief` | SW-A1, SW-A2 | VLANs and their access ports | Host is in the wrong VLAN, or the VLAN doesn't exist |
+| `show mac address-table` | SW-A1, SW-A2 | MAC-to-port table | Confirming the virtual MAC is learned on the port toward the Active router |
+| `show arp` / `arp -a` | Router / PC | IP-to-MAC mappings | Checking the PC resolved the virtual IP to the virtual MAC |
+| `ping <virtual IP>` | PC | Tests reachability of the gateway | After any change, from a host |
 
 ---
 
