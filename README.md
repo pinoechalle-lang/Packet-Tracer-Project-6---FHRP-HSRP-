@@ -61,8 +61,6 @@ Note that Packet Tracer does not support a configurable tracking `decrement`. It
 | 30 | 192.168.30.0/24 | 192.168.30.254 | 192.168.30.252 | 192.168.30.253 |
 | 72 | N/A | N/A | N/A | N/A |
 
----
-
 ### HSRP Design
 
 | Setting | R1 | R2 |
@@ -88,6 +86,8 @@ Note that Packet Tracer does not support a configurable tracking `decrement`. It
 | 4 | Ping between all PCs again | All pings succeed through R2. |
 | 5 | Restore the link | R1 preempts and returns to Active (155). |
 | 6 | Repeat steps 3 to 5 with the R1 to SW-A2 link | R1's priority drops to 135 on group 10 (two tracked interfaces lost). R2 becomes Active, and pings succeed. |
+
+---
 
 ### Verification Commands
 
@@ -120,11 +120,15 @@ ping <virtual IP>
 | `show arp` / `arp -a` | Router / PC | IP-to-MAC mappings | Checking the PC resolved the virtual IP to the virtual MAC |
 | `ping <virtual IP>` | PC | Tests reachability of the gateway | After any change, from a host |
 
+---
+
 ### Known Limitations
 
 - Each access switch is a single point of failure for the hosts attached to it. HSRP protects the gateway, not the switch.
 - The switches are not interconnected, so there is no Layer 2 loop and no STP dependency in this design.
 - On real IOS, the tracking `decrement` can be set manually, and `preempt delay` is recommended. These are not available or reliable in Packet Tracer.
+
+---
 
 ### Files
 
