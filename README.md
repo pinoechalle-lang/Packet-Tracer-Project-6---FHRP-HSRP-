@@ -30,7 +30,7 @@ The network engineer (you) is asked to build a branch network where **a single r
 | T1 | Use router-on-a-stick (802.1Q subinterfaces) on both routers for inter-VLAN routing. |
 | T2 | Use HSRP version 2 with a single virtual gateway per VLAN. |
 | T3 | R1 must be the **Active** router and R2 the **Standby** router for all VLANs. |
-| T4 | Enable `preempt` on both routers so R1 reclaims the Active role after recovery. |
+| T4 | Enable `preempt` on all HSRP groups in both routers so R1 reclaims the Active role after recovery, and in case R1 lowers its priority upon detecting a failure on a specific interface, R2 assumes Active role. |
 | T5 | Use interface tracking so R1 gives up the Active role when it loses a path that R2 still has. |
 | T6 | Both access switches must be dual-homed, with one trunk to each router. |
 | T7 | Trunks must use native VLAN 72 and allow only VLANs 10, 20, 30, and 72. |
@@ -48,9 +48,9 @@ Packet Tracer does not support a configurable tracking `decrement`. It always us
 | 2 | R1 g0/2 | SW-A2 g0/1 |
 | 3 | R2 g0/1 | SW-A1 g0/2 |
 | 4 | R2 g0/2 | SW-A2 g0/2 |
-| 5 | SW-A1 f0/1 | PCA-10 |
-| 6 | SW-A2 f0/1 | PCA-20 |
-| 7 | SW-A2 f0/2 | PCA-30 |
+| 5 | SW-A1 f0/1 | PCA-10 (VLAN 10) |
+| 6 | SW-A2 f0/1 | PCA-20 (VLAN 20) |
+| 7 | SW-A2 f0/2 | PCA-30 (VLAN 30) |
 
 ## Addressing Plan
 
